@@ -33,6 +33,10 @@
 	encode zstd br gzip
 
 	mercure {
+		# https://github.com/php/frankenphp/issues/2034#issuecomment-3596590752
+		transport bolt {
+			path /data/mercure.db
+		}
 		# Publisher JWT key
 		publisher_jwt {env.MERCURE_PUBLISHER_JWT_KEY} {env.MERCURE_PUBLISHER_JWT_ALG}
 		# Subscriber JWT key
