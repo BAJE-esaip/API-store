@@ -19,6 +19,9 @@ class Product
     #[ORM\Column]
     private ?float $unitPrice = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $unitWeight = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $barcode = null;
 
@@ -58,6 +61,18 @@ class Product
     public function setUnitPrice(float $unitPrice): static
     {
         $this->unitPrice = $unitPrice;
+
+        return $this;
+    }
+
+    public function getUnitWeight(): ?float
+    {
+        return $this->unitWeight;
+    }
+
+    public function setUnitWeight(?float $unitWeight): static
+    {
+        $this->unitWeight = $unitWeight;
 
         return $this;
     }
