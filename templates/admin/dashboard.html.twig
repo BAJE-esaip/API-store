@@ -1,0 +1,262 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title %}Tableau de bord{% endblock %}
+
+{% block content %}
+    <style>
+        .ea-dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .dashboard-hero {
+            background: linear-gradient(120deg, #0f172a, #1d4ed8);
+            color: #f8fafc;
+            padding: 20px 24px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.35);
+        }
+
+        .dashboard-hero h1 {
+            margin: 4px 0 8px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .dashboard-hero p {
+            margin: 0;
+            color: #e2e8f0;
+        }
+
+        .panel {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 18px 18px 14px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
+        }
+
+        .panel + .panel {
+            margin-top: 4px;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            gap: 12px;
+        }
+
+        .eyebrow {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .panel-header h2 {
+            margin: 2px 0 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .stat-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 14px 16px;
+            background: linear-gradient(180deg, #ffffff, #f8fafc);
+        }
+
+        .stat-card .label {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .stat-card .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-top: 6px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-green {
+            background: #ecfdf3;
+            color: #166534;
+        }
+
+        .badge-amber {
+            background: #fff7ed;
+            color: #9a3412;
+        }
+
+        .table-scroll {
+            overflow: auto;
+        }
+
+        .list-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 6px;
+        }
+
+        .list-table th,
+        .list-table td {
+            padding: 10px 8px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
+        }
+
+        .muted {
+            color: #6b7280;
+        }
+    </style>
+
+    <div class="ea-dashboard">
+        <div class="dashboard-hero">
+            <div>
+                <p class="eyebrow">Bienvenue</p>
+                <h1>Bonjour {{ user ?? app.user }}</h1>
+                <p>Vue d'ensemble personnalisée selon vos droits. Utilisez la barre latérale pour naviguer.</p>
+            </div>
+        </div>
+
+        {% if adminStats %}
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow">Administration</p>
+                        <h2>Pilotage global</h2>
+                    </div>
+                    <span class="badge badge-green">Accès admin</span>
+                </div>
+
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="label">Collaborateurs</div>
+                        <div class="value">{{ adminStats.employees }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Catégories</div>
+                        <div class="value">{{ adminStats.categories }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Produits référencés</div>
+                        <div class="value">{{ adminStats.products }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Valeur théorique du stock</div>
+                        <div class="value">{{ adminStats.stockValue|number_format(2, ',', ' ') }} €</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Total achats saisis</div>
+                        <div class="value">{{ adminStats.purchasesTotal|number_format(2, ',', ' ') }} €</div>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+
+        {% if checkoutStats %}
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow">Comptoir</p>
+                        <h2>Suivi des ventes</h2>
+                    </div>
+                    <span class="badge badge-green">Accès caisse</span>
+                </div>
+
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="label">Ventes locales</div>
+                        <div class="value">{{ checkoutStats.localSales.count }}</div>
+                        <div class="muted">{{ checkoutStats.localSales.total|number_format(2, ',', ' ') }} € au total</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Ventes mobiles</div>
+                        <div class="value">{{ checkoutStats.mobileSales.count }}</div>
+                        <div class="muted">{{ checkoutStats.mobileSales.total|number_format(2, ',', ' ') }} € au total</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Tickets mobiles à encaisser</div>
+                        <div class="value">{{ checkoutStats.mobileSales.unpaid }}</div>
+                        <div class="muted">non payés</div>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+
+        {% if stockStats %}
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow">Stock & contrôle</p>
+                        <h2>Qualité des mouvements</h2>
+                    </div>
+                    <span class="badge badge-amber">Accès inventaire</span>
+                </div>
+
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="label">Corrections</div>
+                        <div class="value">{{ stockStats.corrections }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Destructions</div>
+                        <div class="value">{{ stockStats.destructions }}</div>
+                    </div>
+                </div>
+
+                <div class="table-scroll">
+                    <table class="list-table">
+                        <thead>
+                        <tr>
+                            <th>Produit le plus bas</th>
+                            <th>Stock</th>
+                            <th>Prix unitaire</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for product in stockStats.lowStock %}
+                            <tr>
+                                <td>{{ product.label }}</td>
+                                <td>{{ product.inventory }}</td>
+                                <td>{{ product.unitPrice|number_format(2, ',', ' ') }} €</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="3" class="muted">Pas encore de produits enregistrés.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        {% endif %}
+    </div>
+{% endblock %}

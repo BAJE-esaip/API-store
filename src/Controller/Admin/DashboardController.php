@@ -3,11 +3,20 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Destruction;
+use App\Repository\CategoryRepository;
+use App\Repository\CorrectionRepository;
+use App\Repository\DestructionRepository;
+use App\Repository\EmployeeRepository;
+use App\Repository\LocalSaleRepository;
+use App\Repository\MobileSaleRepository;
+use App\Repository\ProductRepository;
+use App\Repository\PurchaseRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Component\HttpFoundation\Response;
 
 use App\Entity\Employee;
@@ -25,29 +34,67 @@ use App\Entity\LocalSale;
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 class DashboardController extends AbstractDashboardController
 {
+    public function __construct(
+        private EmployeeRepository $employeeRepository,
+        private ProductRepository $productRepository,
+        private CategoryRepository $categoryRepository,
+        private PurchaseRepository $purchaseRepository,
+        private LocalSaleRepository $localSaleRepository,
+        private MobileSaleRepository $mobileSaleRepository,
+        private CorrectionRepository $correctionRepository,
+        private DestructionRepository $destructionRepository,
+    ) {
+    }
+
     public function index(): Response
     {
-        return parent::index();
+        $adminStats = null;
+        $checkoutStats = null;
+        $stockStats = null;
 
-        // Option 1. You can make your dashboard redirect to some common page of your backend
-        //
-        // 1.1) If you have enabled the "pretty URLs" feature:
-        // return $this->redirectToRoute('admin_user_index');
-        //
-        // 1.2) Same example but using the "ugly URLs" that were used in previous EasyAdmin versions:
-        // $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
-        // return $this->redirect($adminUrlGenerator->setController(OneOfYourCrudController::class)->generateUrl());
+        if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_SYS_ADMIN')) {
+            $adminStats = [
+                'employees' => $this->employeeRepository->count([]),
+                'categories' => $this->categoryRepository->count([]),
+                'products' => $this->productRepository->count([]),
+                'stockValue' => $this->calculateStockValue(),
+                'purchasesTotal' => $this->sumField($this->purchaseRepository, 'p', 'total'),
+            ];
+        }
 
-        // Option 2. You can make your dashboard redirect to different pages depending on the user
-        //
-        // if ('jane' === $this->getUser()->getUsername()) {
-        //     return $this->redirectToRoute('...');
-        // }
+        if ($this->isGranted('ROLE_CHECKOUT') || $this->isGranted('ROLE_CHECKOUT_MANAGER')) {
+            $checkoutStats = [
+                'localSales' => [
+                    'count' => $this->localSaleRepository->count([]),
+                    'total' => $this->sumField($this->localSaleRepository, 'ls', 'total'),
+                ],
+                'mobileSales' => [
+                    'count' => $this->mobileSaleRepository->count([]),
+                    'total' => $this->sumField($this->mobileSaleRepository, 'ms', 'total'),
+                    'unpaid' => (int) $this->mobileSaleRepository->createQueryBuilder('ms')
+                        ->select('COUNT(ms.id)')
+                        ->andWhere('ms.paid = :paid')
+                        ->setParameter('paid', false)
+                        ->getQuery()
+                        ->getSingleScalarResult(),
+                ],
+            ];
+        }
 
-        // Option 3. You can render some custom template to display a proper dashboard with widgets, etc.
-        // (tip: it's easier if your template extends from @EasyAdmin/page/content.html.twig)
-        //
-        // return $this->render('some/path/my-dashboard.html.twig');
+        if ($this->isGranted('ROLE_STOCK') || $this->isGranted('ROLE_CONTROL') || $this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_SYS_ADMIN')) {
+            $stockStats = [
+                'corrections' => $this->correctionRepository->count([]),
+                'destructions' => $this->destructionRepository->count([]),
+                'lowStock' => $this->getLowStockProducts(),
+            ];
+        }
+
+        return $this->render('admin/dashboard.html.twig', [
+            'user' => $this->getUser(),
+            'adminStats' => $adminStats,
+            'checkoutStats' => $checkoutStats,
+            'stockStats' => $stockStats,
+        ]);
     }
 
     public function configureDashboard(): Dashboard
@@ -88,5 +135,33 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Correction', 'fas fa-eraser', Correction::class),
             MenuItem::linkToCrud('Destruction', 'fas fa-trash', Destruction::class),
         ]);
+    }
+
+    private function sumField(ServiceEntityRepository $repository, string $alias, string $field): float
+    {
+        $queryBuilder = $repository->createQueryBuilder($alias)
+            ->select(sprintf('COALESCE(SUM(%s.%s), 0)', $alias, $field));
+
+        return (float) $queryBuilder->getQuery()->getSingleScalarResult();
+    }
+
+    private function calculateStockValue(): float
+    {
+        $queryBuilder = $this->productRepository->createQueryBuilder('p')
+            ->select('COALESCE(SUM(p.inventory * p.unitPrice), 0)');
+
+        return (float) $queryBuilder->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * @return list<Product>
+     */
+    private function getLowStockProducts(): array
+    {
+        return $this->productRepository->createQueryBuilder('p')
+            ->orderBy('p.inventory', 'ASC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult();
     }
 }
