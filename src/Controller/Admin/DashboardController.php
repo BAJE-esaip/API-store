@@ -66,15 +66,19 @@ class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         
-        yield MenuItem::subMenu('Administration', 'fas fa-cog')->setSubItems([
-            MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', Employee::class),
-            MenuItem::linkToCrud('TVA', 'fas fa-ellipsis-v', VatRate::class),
-        ]);
+        yield MenuItem::subMenu('Administration', 'fas fa-cog')
+            ->setPermission('ROLE_ADMIN')
+            ->setSubItems([
+                MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', Employee::class)->setPermission('ROLE_ADMIN'),
+                MenuItem::linkToCrud('TVA', 'fas fa-ellipsis-v', VatRate::class)->setPermission('ROLE_ADMIN'),
+            ]);
 
-        yield MenuItem::subMenu('Comptabilité', 'fas fa-book')->setSubItems([
-            MenuItem::linkToCrud('Hitorique achats', 'fas fa-credit-card', Purchase::class),
-            MenuItem::linkToCrud('Vente Local', 'fas fa-credit-card', LocalSale::class),
-            MenuItem::linkToCrud('Vente Mobile', 'fas fa-credit-card', MobileSale::class),
+        yield MenuItem::subMenu('Comptabilité', 'fas fa-book')
+            ->setPermission('ROLE_CHECKOUT')
+            ->setSubItems([
+                MenuItem::linkToCrud('Hitorique achats', 'fas fa-credit-card', Purchase::class)->setPermission('ROLE_CHECKOUT'),
+                MenuItem::linkToCrud('Vente Local', 'fas fa-credit-card', LocalSale::class)->setPermission('ROLE_CHECKOUT'),
+                MenuItem::linkToCrud('Vente Mobile', 'fas fa-credit-card', MobileSale::class)->setPermission('ROLE_CHECKOUT'),
 
         ]);
 

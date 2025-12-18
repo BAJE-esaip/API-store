@@ -5,6 +5,8 @@ namespace App\Controller\Admin;
 use App\Entity\Destruction;
 use App\Form\DestructionItemType;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -26,6 +28,14 @@ class DestructionCrudController extends AbstractCrudController
             IdField::new('id')->hideOnForm(),
             AssociationField::new('employee'),
         ];
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions
+            ->setPermission(Action::NEW, 'ROLE_STOCK')
+            ->setPermission(Action::EDIT, 'ROLE_STOCK')
+            ->setPermission(Action::DELETE, 'ROLE_STOCK');
     }
 
     public function createNewFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface

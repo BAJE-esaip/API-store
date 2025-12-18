@@ -4,6 +4,8 @@ namespace App\Controller\Admin;
 
 use App\Entity\Product;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
@@ -28,5 +30,13 @@ class ProductCrudController extends AbstractCrudController
             AssociationField::new('category', 'Catégorie'),
             AssociationField::new('vat', 'TVA'),
         ];
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions
+            ->setPermission(Action::NEW, 'ROLE_STOCK')
+            ->setPermission(Action::EDIT, 'ROLE_STOCK')
+            ->setPermission(Action::DELETE, 'ROLE_STOCK');
     }
 }
