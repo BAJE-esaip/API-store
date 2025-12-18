@@ -22,7 +22,7 @@ class Destruction
     /**
      * @var Collection<int, DestructionItem>
      */
-    #[ORM\OneToMany(targetEntity: DestructionItem::class, mappedBy: 'destruction', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: DestructionItem::class, mappedBy: 'destruction', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $destructionItems;
 
     public function __construct()

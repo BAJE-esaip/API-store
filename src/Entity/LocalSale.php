@@ -25,7 +25,7 @@ class LocalSale
     /**
      * @var Collection<int, LocalSaleItem>
      */
-    #[ORM\OneToMany(targetEntity: LocalSaleItem::class, mappedBy: 'localSale', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: LocalSaleItem::class, mappedBy: 'localSale', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $LocalSaleItem;
 
     public function __construct()

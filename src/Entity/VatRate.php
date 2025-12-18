@@ -75,4 +75,9 @@ class VatRate
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return sprintf('%s %%', rtrim(rtrim(number_format((float) $this->rate, 2, '.', ''), '0'), '.'));
+    }
 }

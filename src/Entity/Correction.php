@@ -22,7 +22,7 @@ class Correction
     /**
      * @var Collection<int, CorrectionItem>
      */
-    #[ORM\OneToMany(targetEntity: CorrectionItem::class, mappedBy: 'correction', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: CorrectionItem::class, mappedBy: 'correction', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $correctionItems;
 
     public function __construct()

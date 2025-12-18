@@ -25,7 +25,7 @@ class Purchase
     /**
      * @var Collection<int, PurchaseItem>
      */
-    #[ORM\OneToMany(targetEntity: PurchaseItem::class, mappedBy: 'purchase', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: PurchaseItem::class, mappedBy: 'purchase', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $purchaseItems;
 
     public function __construct()

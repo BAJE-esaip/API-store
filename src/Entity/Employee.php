@@ -310,4 +310,15 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        $fullName = trim(sprintf('%s %s', (string) $this->firstName, (string) $this->lastName));
+
+        if ($fullName !== '') {
+            return $fullName;
+        }
+
+        return (string) $this->username;
+    }
 }
