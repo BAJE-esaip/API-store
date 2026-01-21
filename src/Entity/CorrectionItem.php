@@ -4,21 +4,23 @@ namespace App\Entity;
 
 use App\Repository\CorrectionItemRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 #[ORM\Entity(repositoryClass: CorrectionItemRepository::class)]
+#[UniqueConstraint(name: 'UNIQUE_PRODUCT_CORRECTION', fields: ['product', 'correction'])]
 class CorrectionItem
 {
-    // #[ORM\Id]
-    // #[ORM\GeneratedValue]
-    // #[ORM\Column]
-    // private ?int $id = null;
-
     #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    // #[ORM\Id]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
 
-    #[ORM\Id]
+    // #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'correctionItems')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Correction $correction = null;
@@ -26,10 +28,10 @@ class CorrectionItem
     #[ORM\Column]
     private ?float $newInventory = null;
 
-    // public function getId(): ?int
-    // {
-    //     return $this->id;
-    // }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getProduct(): ?Product
     {

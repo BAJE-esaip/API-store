@@ -16,7 +16,7 @@ class Purchase
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?float $total = null;
+    private ?float $totalCost = null;
 
     #[ORM\ManyToOne(inversedBy: 'purchases')]
     #[ORM\JoinColumn(nullable: false)]
@@ -38,14 +38,14 @@ class Purchase
         return $this->id;
     }
 
-    public function getTotal(): ?float
+    public function getTotalCost(): ?float
     {
-        return $this->total;
+        return $this->totalCost;
     }
 
-    public function setTotal(float $total): static
+    public function setTotalCost(float $totalCost): static
     {
-        $this->total = $total;
+        $this->totalCost = $totalCost;
 
         return $this;
     }

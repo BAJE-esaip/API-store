@@ -6,19 +6,20 @@ use App\Repository\PurchaseItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PurchaseItemRepository::class)]
+#[UniqueConstraint(name: 'UNIQUE_PRODUCT_PURCHASE', fields: ['product', 'purchase'])]
 class PurchaseItem
 {
-    // #[ORM\Id]
-    // #[ORM\GeneratedValue]
-    // #[ORM\Column]
-    // private ?int $id = null;
-
     #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    // #[ORM\Id]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
 
-    #[ORM\Id]
+    // #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'purchaseItems')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Purchase $purchase = null;
@@ -29,10 +30,10 @@ class PurchaseItem
     #[ORM\Column]
     private ?float $unitPriceAtPurchase = null;
 
-    // public function getId(): ?int
-    // {
-    //     return $this->id;
-    // }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getProduct(): ?Product
     {

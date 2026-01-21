@@ -4,21 +4,23 @@ namespace App\Entity;
 
 use App\Repository\MobileSaleItemRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 #[ORM\Entity(repositoryClass: MobileSaleItemRepository::class)]
+#[UniqueConstraint(name: 'UNIQUE_PRODUCT_MOBILE_SALE', fields: ['product', 'mobileSale'])]
 class MobileSaleItem
 {
-    // #[ORM\Id]
-    // #[ORM\GeneratedValue]
-    // #[ORM\Column]
-    // private ?int $id = null;
-
     #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    // #[ORM\Id]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
 
-    #[ORM\Id]
+    // #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'mobileSaleItems')]
     #[ORM\JoinColumn(nullable: false)]
     private ?MobileSale $mobileSale = null;
@@ -29,10 +31,10 @@ class MobileSaleItem
     #[ORM\Column]
     private ?float $unitPriceAtSale = null;
 
-    // public function getId(): ?int
-    // {
-    //     return $this->id;
-    // }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getProduct(): ?Product
     {

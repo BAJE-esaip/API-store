@@ -22,8 +22,8 @@ class Product
     #[ORM\Column(nullable: true)]
     private ?float $unitWeight = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $barcode = null;
+    #[ORM\Column(unique: true)]
+    private ?int $barcode = null;
 
     #[ORM\Column]
     private ?float $inventory = null;

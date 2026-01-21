@@ -39,7 +39,7 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
     /**
@@ -54,11 +54,11 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Correction::class, mappedBy: 'employee')]
     private Collection $corrections;
 
-    /**
-     * @var Collection<int, Destruction>
-     */
-    #[ORM\OneToMany(targetEntity: Destruction::class, mappedBy: 'employee')]
-    private Collection $destructions;
+    // /**
+    //  * @var Collection<int, Destruction>
+    //  */
+    // #[ORM\OneToMany(targetEntity: Destruction::class, mappedBy: 'employee')]
+    // private Collection $destructions;
 
     /**
      * @var Collection<int, Purchase>
@@ -70,7 +70,7 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->localSales = new ArrayCollection();
         $this->corrections = new ArrayCollection();
-        $this->destructions = new ArrayCollection();
+        // $this->destructions = new ArrayCollection();
         $this->purchases = new ArrayCollection();
     }
 
@@ -107,8 +107,9 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
+        // guarantee every employee at least has ROLE_USER and ROLE_EMPLOYEE
         $roles[] = 'ROLE_USER';
+        $roles[] = 'ROLE_EMPLOYEE';
 
         return array_unique($roles);
     }
@@ -251,35 +252,35 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Destruction>
-     */
-    public function getDestructions(): Collection
-    {
-        return $this->destructions;
-    }
+    // /**
+    //  * @return Collection<int, Destruction>
+    //  */
+    // public function getDestructions(): Collection
+    // {
+    //     return $this->destructions;
+    // }
 
-    public function addDestruction(Destruction $destruction): static
-    {
-        if (!$this->destructions->contains($destruction)) {
-            $this->destructions->add($destruction);
-            $destruction->setEmployee($this);
-        }
+    // public function addDestruction(Destruction $destruction): static
+    // {
+    //     if (!$this->destructions->contains($destruction)) {
+    //         $this->destructions->add($destruction);
+    //         $destruction->setEmployee($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeDestruction(Destruction $destruction): static
-    {
-        if ($this->destructions->removeElement($destruction)) {
-            // set the owning side to null (unless already changed)
-            if ($destruction->getEmployee() === $this) {
-                $destruction->setEmployee(null);
-            }
-        }
+    // public function removeDestruction(Destruction $destruction): static
+    // {
+    //     if ($this->destructions->removeElement($destruction)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($destruction->getEmployee() === $this) {
+    //             $destruction->setEmployee(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * @return Collection<int, Purchase>

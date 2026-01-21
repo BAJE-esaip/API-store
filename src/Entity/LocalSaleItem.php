@@ -4,21 +4,23 @@ namespace App\Entity;
 
 use App\Repository\LocalSaleItemRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 #[ORM\Entity(repositoryClass: LocalSaleItemRepository::class)]
+#[UniqueConstraint(name: 'UNIQUE_PRODUCT_LOCAL_SALE', fields: ['product', 'localSale'])]
 class LocalSaleItem
 {
-    // #[ORM\Id]
-    // #[ORM\GeneratedValue]
-    // #[ORM\Column]
-    // private ?int $id = null;
-
     #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    // #[ORM\Id]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
 
-    #[ORM\Id]
+    // #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'localSaleItem')]
     #[ORM\JoinColumn(nullable: false)]
     private ?LocalSale $localSale = null;
@@ -29,10 +31,10 @@ class LocalSaleItem
     #[ORM\Column]
     private ?float $unitPriceAtSale = null;
 
-    // public function getId(): ?int
-    // {
-    //     return $this->id;
-    // }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getProduct(): ?Product
     {

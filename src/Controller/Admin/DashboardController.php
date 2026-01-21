@@ -42,7 +42,7 @@ class DashboardController extends AbstractDashboardController
         private LocalSaleRepository $localSaleRepository,
         private MobileSaleRepository $mobileSaleRepository,
         private CorrectionRepository $correctionRepository,
-        private DestructionRepository $destructionRepository,
+        // private DestructionRepository $destructionRepository,
     ) {
     }
 
@@ -84,7 +84,7 @@ class DashboardController extends AbstractDashboardController
         if ($this->isGranted('ROLE_STOCK') || $this->isGranted('ROLE_CONTROL') || $this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_SYS_ADMIN')) {
             $stockStats = [
                 'corrections' => $this->correctionRepository->count([]),
-                'destructions' => $this->destructionRepository->count([]),
+                // 'destructions' => $this->destructionRepository->count([]),
                 'lowStock' => $this->getLowStockProducts(),
             ];
         }
@@ -112,7 +112,7 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
-        
+
         yield MenuItem::subMenu('Administration', 'fas fa-cog')
             ->setPermission('ROLE_ADMIN')
             ->setSubItems([
@@ -133,7 +133,7 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Produits', 'fas fa-inbox', Product::class),
             MenuItem::linkToCrud('Catégories', 'fas fa-folder', Category::class),
             MenuItem::linkToCrud('Correction', 'fas fa-eraser', Correction::class),
-            MenuItem::linkToCrud('Destruction', 'fas fa-trash', Destruction::class),
+            // MenuItem::linkToCrud('Destruction', 'fas fa-trash', Destruction::class),
         ]);
     }
 

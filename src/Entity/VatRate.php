@@ -15,7 +15,7 @@ class VatRate
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(unique: true)]
     private ?float $rate = null;
 
     /**

@@ -25,6 +25,9 @@ class Correction
     #[ORM\OneToMany(targetEntity: CorrectionItem::class, mappedBy: 'correction', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $correctionItems;
 
+    #[ORM\Column(length: 255)]
+    private ?string $description = null;
+
     public function __construct()
     {
         $this->correctionItems = new ArrayCollection();
@@ -73,6 +76,18 @@ class Correction
                 $correctionItem->setCorrection(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }

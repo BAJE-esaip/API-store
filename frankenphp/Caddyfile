@@ -16,8 +16,9 @@
 
 {$CADDY_EXTRA_CONFIG}
 
-{$SERVER_NAME:localhost} {
-	tls internal
+# {$SERVER_NAME:localhost} {
+http://* {
+	# tls internal
 
 	log {
 		{$CADDY_SERVER_LOG_OPTIONS}
