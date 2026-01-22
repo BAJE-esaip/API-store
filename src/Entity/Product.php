@@ -77,12 +77,12 @@ class Product
         return $this;
     }
 
-    public function getBarcode(): ?string
+    public function getBarcode(): ?int
     {
         return $this->barcode;
     }
 
-    public function setBarcode(?string $barcode): static
+    public function setBarcode(?int $barcode): static
     {
         $this->barcode = $barcode;
 

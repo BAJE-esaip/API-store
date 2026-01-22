@@ -63,6 +63,6 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     protected function getLoginUrl(Request $request): string
     {
-        return $this->urlGenerator->generate('app_login');
+        return $this->urlGenerator->generate('easyadmin_login');
     }
 }

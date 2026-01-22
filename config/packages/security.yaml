@@ -9,24 +9,60 @@ security:
         app_employee_provider:
             entity:
                 class: App\Entity\Employee
-                property: email
+                property: username
         app_client_provider:
             entity:
                 class: App\Entity\Client
                 property: email
+        app_all_users_provider:
+            chain:
+                providers: [app_employee_provider, app_client_provider]
 
     firewalls:
         dev:
             # Ensure dev tools and static assets are always allowed
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
-        main:
+        admin:
+            pattern: ^/admin
             lazy: true
             provider: app_employee_provider
             custom_authenticator: App\Security\LoginFormAuthenticator
             logout:
-                path: /logout
-                target: /login
+                path: /admin/logout
+                target: /admin/login
+        employee_login:
+            pattern: ^/api/login_employee
+            stateless: true
+            provider: app_employee_provider
+            json_login:
+                check_path: /api/login_employee
+                username_path: username
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        client_login:
+            pattern: ^/api/login_client
+            stateless: true
+            provider: app_client_provider
+            json_login:
+                check_path: /api/login_client
+                username_path: email
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        api:
+            pattern: ^/api
+            stateless: true
+            provider: app_all_users_provider
+            entry_point: jwt
+            # json_login:
+            #     check_path: /api/auth
+            #     username_path: email
+            #     password_path: password
+            #     success_handler: lexik_jwt_authentication.handler.authentication_success
+            #     failure_handler: lexik_jwt_authentication.handler.authentication_failure
+            jwt: ~
 
             # Activate different ways to authenticate:
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -40,9 +76,12 @@ security:
 
     # Note: Only the *first* matching rule is applied
     access_control:
-        - { path: ^/login, roles: PUBLIC_ACCESS }
-        - { path: ^/admin, roles: ROLE_USER }
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/admin/login, roles: PUBLIC_ACCESS }
+        - { path: ^/admin/logout, roles: PUBLIC_ACCESS }
+        - { path: ^/admin, roles: ROLE_USER } # TODO: restrict access
+        - { path: ^/api$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login, methods: [POST], roles: PUBLIC_ACCESS }
 
 when@test:
     security:

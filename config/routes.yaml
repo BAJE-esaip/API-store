@@ -10,3 +10,12 @@
 controllers:
     resource: ../src/Controller/
     type: attribute
+
+api_login_employee:
+    path: /api/login_employee
+    methods:
+    - POST
+api_login_client:
+    path: /api/login_client
+    methods:
+    - POST

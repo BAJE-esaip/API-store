@@ -1,6 +1,24 @@
 # API-store
 
-The API backend + admin UI for the individual stores
+L'API web + l'UI admin
+
+## A installer au préalable
+
+Seulement Docker.
+
+## Préparer et lancer le serveur
+
+Dans un terminal :
+1. Allez dans le dossier racine de ce dépôt
+1. Pull les images Docker : `docker compose pull --ignore-buildable`
+1. Build les images Docker depuis le Dockerfile : `docker compose build`
+1. Dans le fichier `.env`, modifiez les ports si ils sont déjà utilisés (serveur, base de données et mailer)
+1. Lancez le serveur : `docker compose up -d`
+1. Génerez des clés pour signer les JWT : `docker compose exec -u $(id -u):$(id -g) php bin/console lexik:jwt:generate-keypair`
+1. Exécutez les migrations pour ajouter les tables dans la base de données : `docker compose exec php bin/console doctrine:migrations:migrate`
+1. Ajoutez des données de test : `docker compose exec php bin/console app:seed-test-data`
+
+# Dump
 
 ## Tables insertion order
 
