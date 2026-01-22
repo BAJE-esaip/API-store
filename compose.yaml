@@ -27,10 +27,10 @@ services:
       SYMFONY_VERSION: ${SYMFONY_VERSION:-}
       STABILITY: ${STABILITY:-stable}
     volumes:
-    # - caddy_data:/data
-    # - caddy_config:/config
-    - /srv/docker_data/baje/api_store/caddy_data:/data
-    - /srv/docker_data/baje/api_store/caddy_config:/config
+    - caddy_data:/data
+    - caddy_config:/config
+    # - /srv/docker_data/baje/api_store/caddy_data:/data
+    # - /srv/docker_data/baje/api_store/caddy_config:/config
     networks:
     - "net"
     ports:
@@ -81,8 +81,8 @@ services:
       retries: 5
       start_period: "60s"
     volumes:
-    # - database_data:/var/lib/postgresql/data:rw
-    - "/srv/docker_data/baje/api_store/database:/var/lib/postgresql/data"
+    - database_data:/var/lib/postgresql/data:rw
+    # - "/srv/docker_data/baje/api_store/database:/var/lib/postgresql/data"
     # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
     # - ./docker/db/data:/var/lib/postgresql/data:rw
     networks:
