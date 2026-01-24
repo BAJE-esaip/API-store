@@ -2,24 +2,44 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use App\Repository\ClientRepository;
+use App\State\AuthenticatedClientProvider;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
+// use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Gedmo\Mapping\Annotation\Timestampable;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ApiResource(
+    normalizationContext: ['groups' => ['client:get']],
+    operations: [
+        new Get(
+            uriTemplate: '/clients/me',
+            provider: AuthenticatedClientProvider::class,
+        ),
+    ],
+)]
 class Client implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    use TimestampableEntity;
+    // use TimestampableEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups([
+        'client:get',
+    ])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups([
+        'client:get',
+    ])]
     private ?string $email = null;
 
     /**
@@ -34,11 +54,16 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    // #[ORM\Column]
-    // private ?\DateTimeImmutable $createdAt = null;
+    #[ORM\Column]
+    #[Timestampable(on: 'create')]
+    #[Groups([
+        'client:get',
+    ])]
+    private ?\DateTimeImmutable $createdAt = null;
 
-    // #[ORM\Column]
-    // private ?\DateTimeImmutable $updatedAt = null;
+    #[ORM\Column]
+    #[Timestampable()]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $deletedAt = null;
@@ -125,29 +150,29 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
         // @deprecated, to be removed when upgrading to Symfony 8
     }
 
-    // public function getCreatedAt(): ?\DateTimeImmutable
-    // {
-    //     return $this->createdAt;
-    // }
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
 
-    // public function setCreatedAt(\DateTimeImmutable $createdAt): static
-    // {
-    //     $this->createdAt = $createdAt;
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
-    //     return $this;
-    // }
+        return $this;
+    }
 
-    // public function getUpdatedAt(): ?\DateTimeImmutable
-    // {
-    //     return $this->updatedAt;
-    // }
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
 
-    // public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
-    // {
-    //     $this->updatedAt = $updatedAt;
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
-    //     return $this;
-    // }
+        return $this;
+    }
 
     public function getDeletedAt(): ?\DateTimeImmutable
     {

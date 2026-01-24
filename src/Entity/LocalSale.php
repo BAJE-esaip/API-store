@@ -6,12 +6,13 @@ use App\Repository\LocalSaleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Gedmo\Mapping\Annotation\Timestampable;
+// use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: LocalSaleRepository::class)]
 class LocalSale
 {
-    use TimestampableEntity;
+    // use TimestampableEntity;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -19,7 +20,7 @@ class LocalSale
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?float $totalProfit = null;
+    private ?float $total = null;
 
     #[ORM\ManyToOne(inversedBy: 'localSales')]
     #[ORM\JoinColumn(nullable: false)]
@@ -36,11 +37,13 @@ class LocalSale
     )]
     private Collection $localSaleItems;
 
-    // #[ORM\Column]
-    // private ?\DateTimeImmutable $createdAt = null;
+    #[ORM\Column]
+    #[Timestampable(on: 'create')]
+    private ?\DateTimeImmutable $createdAt = null;
 
-    // #[ORM\Column]
-    // private ?\DateTimeImmutable $updatedAt = null;
+    #[ORM\Column]
+    #[Timestampable()]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct()
     {
@@ -52,14 +55,14 @@ class LocalSale
         return $this->id;
     }
 
-    public function getTotalProfit(): ?float
+    public function getTotal(): ?float
     {
-        return $this->totalProfit;
+        return $this->total;
     }
 
-    public function setTotalProfit(float $totalProfit): static
+    public function setTotal(float $total): static
     {
-        $this->totalProfit = $totalProfit;
+        $this->total = $total;
 
         return $this;
     }
@@ -106,27 +109,27 @@ class LocalSale
         return $this;
     }
 
-    // public function getCreatedAt(): ?\DateTimeImmutable
-    // {
-    //     return $this->createdAt;
-    // }
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
 
-    // public function setCreatedAt(\DateTimeImmutable $createdAt): static
-    // {
-    //     $this->createdAt = $createdAt;
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
-    //     return $this;
-    // }
+        return $this;
+    }
 
-    // public function getUpdatedAt(): ?\DateTimeImmutable
-    // {
-    //     return $this->updatedAt;
-    // }
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
 
-    // public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
-    // {
-    //     $this->updatedAt = $updatedAt;
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
-    //     return $this;
-    // }
+        return $this;
+    }
 }

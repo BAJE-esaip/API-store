@@ -87,6 +87,7 @@ security:
         - { path: ^/admin, roles: ROLE_USER } # TODO: restrict access
         - { path: ^/api$, roles: PUBLIC_ACCESS }
         - { path: ^/api/login, methods: [POST], roles: PUBLIC_ACCESS }
+        - { path: ^/api/clients/me, methods: [GET], roles: ROLE_CLIENT }
 
 when@test:
     security:
