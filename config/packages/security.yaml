@@ -32,21 +32,21 @@ security:
                 path: /admin/logout
                 target: /admin/login
         employee_login:
-            pattern: ^/api/login_employee
+            pattern: ^/api/auth/employee
             stateless: true
             provider: app_employee_provider
             json_login:
-                check_path: /api/login_employee
+                check_path: /api/auth/employee
                 username_path: username
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
         client_login:
-            pattern: ^/api/login_client
+            pattern: ^/api/auth/client
             stateless: true
             provider: app_client_provider
             json_login:
-                check_path: /api/login_client
+                check_path: /api/auth/client
                 username_path: email
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
@@ -69,10 +69,13 @@ security:
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
+
     role_hierarchy:
         ROLE_SYS_ADMIN: [ROLE_ADMIN, ROLE_CONTROL, ROLE_CHECKOUT, ROLE_CHECKOUT_MANAGER]
-        ROLE_CHECKOUT_MANAGER: ROLE_CHECKOUT
-        ROLE_ADMIN: [ROLE_STOCK, ROLE_CHECKOUT_MANAGER, ROLE_CHECKOUT]
+        ROLE_ADMIN: [ROLE_STOCK]
+        # employees and clients are users
+        ROLE_EMPLOYEE: [ROLE_USER]
+        ROLE_CLIENT: [ROLE_USER]
 
     # Note: Only the *first* matching rule is applied
     access_control:

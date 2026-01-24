@@ -11,7 +11,7 @@ use ApiPlatform\OpenApi\OpenApi;
 use ArrayObject;
 use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 
-// priority at "-1" to overwrite the one from the library
+// priority at "-1" to overwrite the one from the JWT library
 #[AsDecorator(decorates: 'api_platform.openapi.factory', priority: -1)]
 class OpenApiFactory implements OpenApiFactoryInterface {
     public function __construct(
@@ -26,7 +26,7 @@ class OpenApiFactory implements OpenApiFactoryInterface {
 
         $schemas = $openApi->getComponents()->getSchemas();
 
-        // credentials
+        // employee credentials
         $schemas['AuthInputEmployee'] = new ArrayObject([
             'type' => 'object',
             'properties' => [
@@ -40,6 +40,7 @@ class OpenApiFactory implements OpenApiFactoryInterface {
                 ],
             ],
         ]);
+        // client credentials
         $schemas['AuthInputClient'] = new ArrayObject([
             'type' => 'object',
             'properties' => [
@@ -64,8 +65,8 @@ class OpenApiFactory implements OpenApiFactoryInterface {
         //     ],
         // ]);
 
-        // JWT token
-        $schemas['AuthOutput'] = new ArrayObject([
+        // authentication response for employees
+        $schemas['AuthOutputEmployee'] = new ArrayObject([
             'type' => 'object',
             'properties' => [
                 'token' => [
@@ -84,7 +85,31 @@ class OpenApiFactory implements OpenApiFactoryInterface {
                 //         'lastName' => ['type' => 'string'],
                 //         'email' => ['type' => 'string'],
                 //     ]
-                // ]
+                // ],
+                'employee' => [
+                    'type' => 'object',
+                    'readOnly' => true,
+                    'properties' => [
+                        'email' => ['type' => 'string'],
+                        'firstName' => ['type' => 'string'],
+                        'lastName' => ['type' => 'string'],
+                        'roles' => [
+                            'type' => 'array',
+                            'readOnly' => true,
+                            'items' => ['type' => 'string'],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+        // authentication response for employees
+        $schemas['AuthOutputClient'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'token' => [
+                    'type' => 'string',
+                    'readOnly' => true,
+                ],
             ],
         ]);
 
@@ -103,7 +128,7 @@ class OpenApiFactory implements OpenApiFactoryInterface {
                         'content' => [
                             'application/json' => [
                                 'schema' => [
-                                    '$ref' => '#/components/schemas/AuthOutput',
+                                    '$ref' => '#/components/schemas/AuthOutputEmployee',
                                 ],
                             ],
                         ],
@@ -122,7 +147,7 @@ class OpenApiFactory implements OpenApiFactoryInterface {
                 ),
             ),
         );
-        $paths->addPath('/api/login_employee', $loginPathEmployee);
+        $paths->addPath('/api/auth/employee', $loginPathEmployee);
 
         $loginPathClient = new PathItem(
             ref: 'JWT token client',
@@ -135,7 +160,7 @@ class OpenApiFactory implements OpenApiFactoryInterface {
                         'content' => [
                             'application/json' => [
                                 'schema' => [
-                                    '$ref' => '#/components/schemas/AuthOutput',
+                                    '$ref' => '#/components/schemas/AuthOutputClient',
                                 ],
                             ],
                         ],
@@ -154,7 +179,7 @@ class OpenApiFactory implements OpenApiFactoryInterface {
                 ),
             ),
         );
-        $paths->addPath('/api/login_client', $loginPathClient);
+        $paths->addPath('/api/auth/client', $loginPathClient);
 
         // refresh token endpoint
         // $refreshPath = new PathItem(

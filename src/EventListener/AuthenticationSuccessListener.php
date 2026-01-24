@@ -12,7 +12,7 @@ final class AuthenticationSuccessListener {
         private LoggerInterface $logger,
     ) {}
 
-    // #[AsEventListener(event: 'lexik_jwt_authentication.on_authentication_success')]
+    #[AsEventListener(event: 'lexik_jwt_authentication.on_authentication_success')]
     public function onAuthenticationSuccess($event): void {
         $this->logger->debug('onAuthenticationSuccess called');
         $user = $event->getUser();
@@ -23,9 +23,12 @@ final class AuthenticationSuccessListener {
         // ];
         if ($user instanceof Employee) {
             // add employee data
-            // $jsonData['employee'] = [
-            //     'email' => $user->getEmail(),
-            // ];
+            $jsonData['employee'] = [
+                'email' => $user->getEmail(),
+                'firstName' => $user->getFirstName(),
+                'lastName' => $user->getLastName(),
+                'roles' => $user->getRoles(),
+            ];
             // ...
         }
         else if ($user instanceof Client) {
@@ -33,7 +36,7 @@ final class AuthenticationSuccessListener {
             // ...
         }
         else {
-            $this->logger->error('');
+            $this->logger->error('The authenticated user is not an instance of Client or Employee');
         }
         $event->setData($jsonData);
     }

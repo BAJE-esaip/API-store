@@ -18,7 +18,7 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180)]
+    #[ORM\Column(length: 255)]
     private ?string $username = null;
 
     /**
@@ -108,7 +108,7 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         // guarantee every employee at least has ROLE_USER and ROLE_EMPLOYEE
-        $roles[] = 'ROLE_USER';
+        // $roles[] = 'ROLE_USER';
         $roles[] = 'ROLE_EMPLOYEE';
 
         return array_unique($roles);
