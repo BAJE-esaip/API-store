@@ -6,6 +6,7 @@ use App\Repository\EmployeeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -13,6 +14,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
 class Employee implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -65,6 +68,17 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: Purchase::class, mappedBy: 'employee')]
     private Collection $purchases;
+
+    // #[ORM\Column]
+    // #[Timestampable(on: 'create')]
+    // private ?\DateTimeImmutable $createdAt = null;
+
+    // #[ORM\Column]
+    // #[Timestampable()]
+    // private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $deletedAt = null;
 
     public function __construct()
     {
@@ -321,5 +335,41 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return (string) $this->username;
+    }
+
+    // public function getCreatedAt(): ?\DateTimeImmutable
+    // {
+    //     return $this->createdAt;
+    // }
+
+    // public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    // {
+    //     $this->createdAt = $createdAt;
+
+    //     return $this;
+    // }
+
+    // public function getUpdatedAt(): ?\DateTimeImmutable
+    // {
+    //     return $this->updatedAt;
+    // }
+
+    // public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    // {
+    //     $this->updatedAt = $updatedAt;
+
+    //     return $this;
+    // }
+
+    public function getDeletedAt(): ?\DateTimeImmutable
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?\DateTimeImmutable $deletedAt): static
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
     }
 }

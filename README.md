@@ -13,6 +13,8 @@ Dans un terminal :
 1. Pull les images Docker : `docker compose pull --ignore-buildable`
 1. Build les images Docker depuis le Dockerfile : `docker compose build`
 1. Dans le fichier `.env`, modifiez les ports si ils sont déjà utilisés (serveur, base de données et mailer)
+1. Lancez la BDD : `docker compose up -d database`
+1. Installez les dépendances composer : `docker compose run --rm -u $(id -u):$(id -g) php composer install`
 1. Lancez le serveur : `docker compose up -d`
 1. Génerez des clés pour signer les JWT : `docker compose exec -u $(id -u):$(id -g) php bin/console lexik:jwt:generate-keypair`
 1. Exécutez les migrations pour ajouter les tables dans la base de données : `docker compose exec php bin/console doctrine:schema:update --force`

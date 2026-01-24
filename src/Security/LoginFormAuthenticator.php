@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Entity\Employee;
 use App\Repository\EmployeeRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,8 +25,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
         private EmployeeRepository $employeeRepository,
-    ) {
-    }
+    ) {}
 
     public function authenticate(Request $request): Passport
     {
@@ -38,8 +38,12 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
             new UserBadge($username, function (string $userIdentifier) {
                 $user = $this->employeeRepository->findOneBy(['username' => $userIdentifier]);
 
-                if (!$user) {
+                if (!($user instanceof Employee)) {
                     throw new CustomUserMessageAuthenticationException('Nom d\'utilisateur ou mot de passe invalide.');
+                }
+
+                if ($user->getDeletedAt() !== null) {
+                    throw new CustomUserMessageAuthenticationException('Your account has been deleted and can no longer be accessed.');
                 }
 
                 return $user;

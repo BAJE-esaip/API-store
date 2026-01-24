@@ -6,10 +6,13 @@ use App\Repository\MobileSaleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: MobileSaleRepository::class)]
 class MobileSale
 {
+    use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -34,6 +37,12 @@ class MobileSale
         cascade: ['persist', 'remove'],
     )]
     private Collection $mobileSaleItems;
+
+    // #[ORM\Column]
+    // private ?\DateTimeImmutable $createdAt = null;
+
+    // #[ORM\Column]
+    // private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct()
     {
@@ -110,4 +119,28 @@ class MobileSale
 
         return $this;
     }
+
+    // public function getCreatedAt(): ?\DateTimeImmutable
+    // {
+    //     return $this->createdAt;
+    // }
+
+    // public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    // {
+    //     $this->createdAt = $createdAt;
+
+    //     return $this;
+    // }
+
+    // public function getUpdatedAt(): ?\DateTimeImmutable
+    // {
+    //     return $this->updatedAt;
+    // }
+
+    // public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    // {
+    //     $this->updatedAt = $updatedAt;
+
+    //     return $this;
+    // }
 }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ClientRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -11,6 +12,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 class Client implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -30,6 +33,15 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    // #[ORM\Column]
+    // private ?\DateTimeImmutable $createdAt = null;
+
+    // #[ORM\Column]
+    // private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $deletedAt = null;
 
     public function getId(): ?int
     {
@@ -111,5 +123,41 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         // @deprecated, to be removed when upgrading to Symfony 8
+    }
+
+    // public function getCreatedAt(): ?\DateTimeImmutable
+    // {
+    //     return $this->createdAt;
+    // }
+
+    // public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    // {
+    //     $this->createdAt = $createdAt;
+
+    //     return $this;
+    // }
+
+    // public function getUpdatedAt(): ?\DateTimeImmutable
+    // {
+    //     return $this->updatedAt;
+    // }
+
+    // public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    // {
+    //     $this->updatedAt = $updatedAt;
+
+    //     return $this;
+    // }
+
+    public function getDeletedAt(): ?\DateTimeImmutable
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?\DateTimeImmutable $deletedAt): static
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
     }
 }

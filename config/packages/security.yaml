@@ -35,6 +35,7 @@ security:
             pattern: ^/api/auth/employee
             stateless: true
             provider: app_employee_provider
+            user_checker: App\Security\UserChecker
             json_login:
                 check_path: /api/auth/employee
                 username_path: username
@@ -45,6 +46,7 @@ security:
             pattern: ^/api/auth/client
             stateless: true
             provider: app_client_provider
+            user_checker: App\Security\UserChecker
             json_login:
                 check_path: /api/auth/client
                 username_path: email
