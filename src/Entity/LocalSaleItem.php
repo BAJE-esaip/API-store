@@ -21,7 +21,7 @@ class LocalSaleItem
     private ?Product $product = null;
 
     // #[ORM\Id]
-    #[ORM\ManyToOne(inversedBy: 'localSaleItem')]
+    #[ORM\ManyToOne(inversedBy: 'localSaleItems')]
     #[ORM\JoinColumn(nullable: false)]
     private ?LocalSale $localSale = null;
 

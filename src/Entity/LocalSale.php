@@ -25,12 +25,17 @@ class LocalSale
     /**
      * @var Collection<int, LocalSaleItem>
      */
-    #[ORM\OneToMany(targetEntity: LocalSaleItem::class, mappedBy: 'localSale', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    private Collection $LocalSaleItem;
+    #[ORM\OneToMany(
+        targetEntity: LocalSaleItem::class,
+        mappedBy: 'localSale',
+        orphanRemoval: true,
+        cascade: ['persist', 'remove'],
+    )]
+    private Collection $localSaleItems;
 
     public function __construct()
     {
-        $this->LocalSaleItem = new ArrayCollection();
+        $this->localSaleItems = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -65,15 +70,15 @@ class LocalSale
     /**
      * @return Collection<int, LocalSaleItem>
      */
-    public function getLocalSaleItem(): Collection
+    public function getLocalSaleItems(): Collection
     {
-        return $this->LocalSaleItem;
+        return $this->localSaleItems;
     }
 
     public function addLocalSaleItem(LocalSaleItem $localSaleItem): static
     {
-        if (!$this->LocalSaleItem->contains($localSaleItem)) {
-            $this->LocalSaleItem->add($localSaleItem);
+        if (!$this->localSaleItems->contains($localSaleItem)) {
+            $this->localSaleItems->add($localSaleItem);
             $localSaleItem->setLocalSale($this);
         }
 
@@ -82,7 +87,7 @@ class LocalSale
 
     public function removeLocalSaleItem(LocalSaleItem $localSaleItem): static
     {
-        if ($this->LocalSaleItem->removeElement($localSaleItem)) {
+        if ($this->localSaleItems->removeElement($localSaleItem)) {
             // set the owning side to null (unless already changed)
             if ($localSaleItem->getLocalSale() === $this) {
                 $localSaleItem->setLocalSale(null);

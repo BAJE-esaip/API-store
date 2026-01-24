@@ -27,7 +27,12 @@ class MobileSale
     /**
      * @var Collection<int, MobileSaleItem>
      */
-    #[ORM\OneToMany(targetEntity: MobileSaleItem::class, mappedBy: 'mobileSale', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(
+        targetEntity: MobileSaleItem::class,
+        mappedBy: 'mobileSale',
+        orphanRemoval: true,
+        cascade: ['persist', 'remove'],
+    )]
     private Collection $mobileSaleItems;
 
     public function __construct()
