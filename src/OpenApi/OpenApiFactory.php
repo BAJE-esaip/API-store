@@ -71,6 +71,7 @@ class OpenApiFactory implements OpenApiFactoryInterface {
             'properties' => [
                 'token' => [
                     'type' => 'string',
+                    'format' => 'jwt',
                     'readOnly' => true,
                 ],
                 // 'refresh_token' => [
@@ -90,13 +91,22 @@ class OpenApiFactory implements OpenApiFactoryInterface {
                     'type' => 'object',
                     'readOnly' => true,
                     'properties' => [
-                        'email' => ['type' => 'string'],
-                        'firstName' => ['type' => 'string'],
-                        'lastName' => ['type' => 'string'],
+                        'email' => [
+                            'type' => 'string',
+                            'format' => 'email',
+                        ],
+                        'firstName' => [
+                            'type' => 'string'
+                        ],
+                        'lastName' => [
+                            'type' => 'string',
+                        ],
                         'roles' => [
                             'type' => 'array',
                             'readOnly' => true,
-                            'items' => ['type' => 'string'],
+                            'items' => [
+                                'type' => 'string',
+                            ],
                         ],
                     ],
                 ],
@@ -108,7 +118,26 @@ class OpenApiFactory implements OpenApiFactoryInterface {
             'properties' => [
                 'token' => [
                     'type' => 'string',
+                    'format' => 'jwt',
                     'readOnly' => true,
+                ],
+                'client' => [
+                    'type' => 'object',
+                    'readOnly' => true,
+                    'properties' => [
+                        'email' => [
+                            'type' => 'string',
+                            'format' => 'email',
+                        ],
+                        'uuid' => [
+                            'type' => 'string',
+                            'format' => 'uuid',
+                        ],
+                        'createdAt' => [
+                            'type' => 'string',
+                            'format' => 'date-time',
+                        ],
+                    ],
                 ],
             ],
         ]);

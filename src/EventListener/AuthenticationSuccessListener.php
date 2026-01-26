@@ -33,7 +33,11 @@ final class AuthenticationSuccessListener {
         }
         else if ($user instanceof Client) {
             // add client data
-            // ...
+            $jsonData['client'] = [
+                'email' => $user->getEmail(),
+                'uuid' => $user->getUuid(),
+                'createdAt' => $user->getCreatedAt()->format(\DateTimeInterface::RFC3339_EXTENDED),
+            ];
         }
         else {
             $this->logger->error('The authenticated user is not an instance of Client or Employee');

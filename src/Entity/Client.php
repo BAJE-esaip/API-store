@@ -2,21 +2,30 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use App\Repository\ClientRepository;
 use App\State\AuthenticatedClientProvider;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 // use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\Mapping\Annotation\Timestampable;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+// use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ApiResource(
-    normalizationContext: ['groups' => ['client:get']],
+    normalizationContext: [
+        'groups' => ['client:get'],
+        DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339_EXTENDED,
+    ],
     operations: [
         new Get(
             uriTemplate: '/clients/me',
@@ -31,10 +40,15 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[ApiProperty(identifier: false)]
+    private ?int $id = null;
+
+    #[ORM\Column(type: 'uuid', unique: true)]
     #[Groups([
         'client:get',
     ])]
-    private ?int $id = null;
+    #[ApiProperty(identifier: true)]
+    private ?Uuid $uuid = null;
 
     #[ORM\Column(length: 255)]
     #[Groups([
@@ -54,11 +68,20 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    /**
+     * @var Collection<int, MobileSale>
+     */
+    #[ORM\OneToMany(targetEntity: MobileSale::class, mappedBy: 'client')]
+    private Collection $mobileSales;
+
     #[ORM\Column]
     #[Timestampable(on: 'create')]
     #[Groups([
         'client:get',
     ])]
+    // #[Context(normalizationContext: [
+    //     DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339_EXTENDED,
+    // ])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
@@ -68,9 +91,26 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $deletedAt = null;
 
+    public function __construct()
+    {
+        $this->mobileSales = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getUuid(): ?Uuid
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(Uuid $uuid): static
+    {
+        $this->uuid = $uuid;
+
+        return $this;
     }
 
     public function getEmail(): ?string
@@ -182,6 +222,36 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDeletedAt(?\DateTimeImmutable $deletedAt): static
     {
         $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MobileSale>
+     */
+    public function getMobileSales(): Collection
+    {
+        return $this->mobileSales;
+    }
+
+    public function addMobileSale(MobileSale $mobileSale): static
+    {
+        if (!$this->mobileSales->contains($mobileSale)) {
+            $this->mobileSales->add($mobileSale);
+            $mobileSale->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMobileSale(MobileSale $mobileSale): static
+    {
+        if ($this->mobileSales->removeElement($mobileSale)) {
+            // set the owning side to null (unless already changed)
+            if ($mobileSale->getClient() === $this) {
+                $mobileSale->setClient(null);
+            }
+        }
 
         return $this;
     }

@@ -16,6 +16,9 @@ class Product
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(unique: true)]
+    private ?string $code = null;
+
     #[ORM\Column(length: 255)]
     private ?string $label = null;
 
@@ -24,9 +27,6 @@ class Product
 
     #[ORM\Column(nullable: true)]
     private ?float $unitWeight = null;
-
-    #[ORM\Column(unique: true)]
-    private ?int $barcode = null;
 
     #[ORM\Column]
     private ?float $inventory = null;
@@ -89,14 +89,14 @@ class Product
         return $this;
     }
 
-    public function getBarcode(): ?int
+    public function getCode(): ?int
     {
-        return $this->barcode;
+        return $this->code;
     }
 
-    public function setBarcode(?int $barcode): static
+    public function setCode(?int $code): static
     {
-        $this->barcode = $barcode;
+        $this->code = $code;
 
         return $this;
     }

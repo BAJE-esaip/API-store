@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation\Timestampable;
+use Symfony\Component\Uid\Uuid;
 // use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: MobileSaleRepository::class)]
@@ -19,8 +20,8 @@ class MobileSale
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $clientId = null;
+    #[ORM\Column(type: 'uuid', unique: true)]
+    private ?Uuid $uuid = null;
 
     #[ORM\Column]
     private ?float $total = null;
@@ -38,6 +39,10 @@ class MobileSale
         cascade: ['persist', 'remove'],
     )]
     private Collection $mobileSaleItems;
+
+    #[ORM\ManyToOne(inversedBy: 'mobileSales')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Client $client = null;
 
     #[ORM\Column]
     #[Timestampable(on: 'create')]
@@ -57,14 +62,14 @@ class MobileSale
         return $this->id;
     }
 
-    public function getClientId(): ?int
+    public function getUuid(): ?Uuid
     {
-        return $this->clientId;
+        return $this->uuid;
     }
 
-    public function setClientId(int $clientId): static
+    public function setUuid(Uuid $uuid): static
     {
-        $this->clientId = $clientId;
+        $this->uuid = $uuid;
 
         return $this;
     }
@@ -119,6 +124,18 @@ class MobileSale
                 $mobileSaleItem->setMobileSale(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getClient(): ?Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(?Client $client): static
+    {
+        $this->client = $client;
 
         return $this;
     }

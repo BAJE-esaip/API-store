@@ -15,6 +15,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Uid\Factory\UuidFactory;
+use Symfony\Component\Uid\Uuid;
 
 #[AsCommand(
     name: 'app:seed-test-data',
@@ -24,6 +26,7 @@ class SeedTestDataCommand extends Command {
     public function __construct(
         private EntityManagerInterface $em,
         private UserPasswordHasherInterface $passwordHasher,
+        private UuidFactory $uuidFactory,
     ) {
         parent::__construct();
     }
@@ -55,7 +58,10 @@ class SeedTestDataCommand extends Command {
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $io = new SymfonyStyle($input, $output);
 
-        $client1 = (new Client())->setEmail('john.doe@mail.local');
+        $client1 = (new Client())
+            ->setUuid($this->uuidFactory->randomBased()->create())
+            ->setEmail('john.doe@mail.local')
+            ;
         $hashedPassword = $this->passwordHasher->hashPassword(
             $client1,
             'azerty1234',
