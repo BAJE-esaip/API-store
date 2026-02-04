@@ -46,7 +46,7 @@ class LocalSale
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    #[Timestampable()]
+    #[Timestampable(on: 'update')]
     private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct()
