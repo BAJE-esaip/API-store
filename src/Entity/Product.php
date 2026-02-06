@@ -2,12 +2,38 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation\Timestampable;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 // use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ApiResource(
+    normalizationContext: [
+        'groups' => ['product:get'],
+        DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339_EXTENDED,
+    ],
+    operations: [
+        new GetCollection(
+            // normalizationContext: [
+            //     'groups' => ['product:getCollection'],
+            //     // 'groups' => ['product:get'],
+            // ],
+            // security: "is_granted('ROLE_CHECKOUT')",
+        ),
+        new Get(
+            // normalizationContext: [
+            //     'groups' => ['product:get'],
+            // ],
+        ),
+    ],
+)]
 class Product
 {
     // use TimestampableEntity;
@@ -15,18 +41,32 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[ApiProperty(identifier: false)]
     private ?int $id = null;
 
     #[ORM\Column(unique: true)]
+    #[ApiProperty(identifier: true)]
+    #[Groups([
+        'product:get',
+    ])]
     private ?string $code = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups([
+        'product:get',
+    ])]
     private ?string $label = null;
 
     #[ORM\Column]
+    #[Groups([
+        'product:get',
+    ])]
     private ?float $unitPrice = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups([
+        'product:get',
+    ])]
     private ?float $unitWeight = null;
 
     #[ORM\Column]
@@ -34,10 +74,16 @@ class Product
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups([
+        'product:get',
+    ])]
     private ?Category $category = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups([
+        'product:get',
+    ])]
     private ?VatRate $vat = null;
 
     #[ORM\Column]
@@ -174,5 +220,12 @@ class Product
         $this->deletedAt = $deletedAt;
 
         return $this;
+    }
+
+    #[Groups([
+        'product:get',
+    ])]
+    public function getIsAvailable(): bool {
+        return $this->deletedAt === null;
     }
 }

@@ -137,6 +137,10 @@ class OpenApiFactory implements OpenApiFactoryInterface {
                             'type' => 'string',
                             'format' => 'date-time',
                         ],
+                        'updatedAt' => [
+                            'type' => 'string',
+                            'format' => 'date-time',
+                        ],
                     ],
                 ],
             ],

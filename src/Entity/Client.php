@@ -5,19 +5,23 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
 use App\Repository\ClientRepository;
 use App\State\AuthenticatedClientProvider;
+use App\State\ClientRegistrationProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 // use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\Mapping\Annotation\Timestampable;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 // use Symfony\Component\Serializer\Annotation\Context;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -26,13 +30,23 @@ use Symfony\Component\Uid\Uuid;
         'groups' => ['client:get'],
         DateTimeNormalizer::FORMAT_KEY => \DateTimeInterface::RFC3339_EXTENDED,
     ],
+    denormalizationContext: [
+        'groups' => ['client:set'],
+    ],
     operations: [
         new Get(
             uriTemplate: '/clients/me',
+            // security: "is_granted('ROLE_CLIENT')",
+            // security: "is_granted('ROLE_ABC')",
             provider: AuthenticatedClientProvider::class,
         ),
+        new Post(
+            processor: ClientRegistrationProcessor::class,
+        ),
+        // new Patch(),
     ],
 )]
+#[UniqueEntity(fields: ['email'])]
 class Client implements UserInterface, PasswordAuthenticatedUserInterface
 {
     // use TimestampableEntity;
@@ -53,7 +67,9 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     #[Groups([
         'client:get',
+        'client:set',
     ])]
+    #[Assert\Email()]
     private ?string $email = null;
 
     /**
@@ -66,6 +82,12 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Groups([
+        'client:set',
+    ])]
+    // #[Assert\NotBlank()]
+    // TODO: add password validation
+    #[Assert\Length(min: 8)]
     private ?string $password = null;
 
     /**
@@ -86,6 +108,9 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     #[Timestampable(on: 'update')]
+    #[Groups([
+        'client:get',
+    ])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(nullable: true)]

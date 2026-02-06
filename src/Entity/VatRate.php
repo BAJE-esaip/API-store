@@ -2,12 +2,17 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\VatRateRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: VatRateRepository::class)]
+#[ApiResource(
+    operations: [],
+)]
 class VatRate
 {
     #[ORM\Id]
@@ -16,6 +21,9 @@ class VatRate
     private ?int $id = null;
 
     #[ORM\Column(unique: true)]
+    #[Groups([
+        'product:get',
+    ])]
     private ?float $rate = null;
 
     /**

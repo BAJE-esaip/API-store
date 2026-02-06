@@ -38,10 +38,10 @@ class SeedTestDataCommand extends Command {
     public function __construct(
         private EntityManagerInterface $em,
         private UserPasswordHasherInterface $passwordHasher,
-        private UuidFactory $uuidFactory,
+        UuidFactory $uuidFactory,
     ) {
         parent::__construct();
-        $this->randomUuidFactory = $this->uuidFactory->randomBased();
+        $this->randomUuidFactory = $uuidFactory->randomBased();
     }
 
     // protected function configure(): void {

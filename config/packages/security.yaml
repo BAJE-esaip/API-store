@@ -81,13 +81,21 @@ security:
 
     # Note: Only the *first* matching rule is applied
     access_control:
-        # - { path: ^/profile, roles: ROLE_USER }
-        - { path: ^/admin/login, roles: PUBLIC_ACCESS }
-        - { path: ^/admin/logout, roles: PUBLIC_ACCESS }
-        - { path: ^/admin, roles: ROLE_USER } # TODO: restrict access
+        # backoffice authentication
+        - { path: ^/admin/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/admin/logout$, roles: PUBLIC_ACCESS }
+        # backoffice access
+        - { path: ^/admin, roles: ROLE_STOCK }
+         # Swagger documentation
         - { path: ^/api$, roles: PUBLIC_ACCESS }
-        - { path: ^/api/login, methods: [POST], roles: PUBLIC_ACCESS }
-        - { path: ^/api/clients/me, methods: [GET], roles: ROLE_CLIENT }
+        # clients API registration
+        - { path: ^/api/clients$, methods: [POST], roles: PUBLIC_ACCESS }
+        # clients API login
+        - { path: ^/api/login$, methods: [POST], roles: PUBLIC_ACCESS }
+        - { path: ^/api/clients, roles: ROLE_CLIENT }
+        - { path: ^/api/products, roles: PUBLIC_ACCESS }
+        # close all API route that are undefined
+        - { path: '^/api', roles: ROLE_IMPOSSIBLE }
 
 when@test:
     security:

@@ -5,12 +5,20 @@ api_platform:
         stateless: true
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
+        # pagination
+        # let clients choose if they want pagination
+        pagination_client_enabled: true
+        # default number of items per page
+        # pagination_items_per_page: 15 # default 30
+        # let clients choose the number of items per page
+        pagination_client_items_per_page: true
+
     swagger:
         api_keys:
             JWT:
                 name: Authorization
                 type: header
     formats:
-        json: ["application/json"]
         jsonld: ["application/ld+json"]
+        json: ["application/json"]
         html: ["text/html"]

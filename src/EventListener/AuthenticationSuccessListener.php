@@ -29,7 +29,6 @@ final class AuthenticationSuccessListener {
                 'lastName' => $user->getLastName(),
                 'roles' => $user->getRoles(),
             ];
-            // ...
         }
         else if ($user instanceof Client) {
             // add client data
@@ -37,6 +36,7 @@ final class AuthenticationSuccessListener {
                 'email' => $user->getEmail(),
                 'uuid' => $user->getUuid(),
                 'createdAt' => $user->getCreatedAt()->format(\DateTimeInterface::RFC3339_EXTENDED),
+                'updatedAt' => $user->getUpdatedAt()->format(\DateTimeInterface::RFC3339_EXTENDED),
             ];
         }
         else {

@@ -64,3 +64,11 @@ function generateTitle(title, fillCharacter) {
     console.log(lines.join("\n"));
 }
 ```
+
+## Test accounts
+
+Clients :
+- hugo.marchand@mail.local - azerty1234
+
+Employees :
+- alice_dubois - 1234azerty
