@@ -52,7 +52,22 @@ class EmployeeCrudController extends AbstractCrudController
                 ->onlyWhenUpdating(),
             ChoiceField::new('roles')
                 ->setChoices($this->roleChoices)
-                ->allowMultipleChoices(),
+                ->allowMultipleChoices()
+                ->formatValue(static function ($value): string {
+                    if (!is_iterable($value)) {
+                        return '';
+                    }
+
+                    $roles = [];
+                    foreach ($value as $role) {
+                        if ($role === 'ROLE_EMPLOYEE') {
+                            continue;
+                        }
+                        $roles[] = (string) $role;
+                    }
+
+                    return implode(', ', $roles);
+                }),
         ];
     }
 
@@ -65,6 +80,8 @@ class EmployeeCrudController extends AbstractCrudController
                     $this->passwordHasher->hashPassword($entityInstance, $plainPassword)
                 );
             }
+
+            $entityInstance->setRoles(array_values(array_unique($entityInstance->getRoles())));
         }
 
         parent::persistEntity($entityManager, $entityInstance);
@@ -83,6 +100,8 @@ class EmployeeCrudController extends AbstractCrudController
                     $this->passwordHasher->hashPassword($entityInstance, $plainPassword)
                 );
             }
+
+            $entityInstance->setRoles(array_values(array_unique($entityInstance->getRoles())));
         }
 
         parent::updateEntity($entityManager, $entityInstance);
@@ -109,6 +128,9 @@ class EmployeeCrudController extends AbstractCrudController
         $roles = array_values(array_unique($roles));
         $choices = [];
         foreach ($roles as $role) {
+            if ($role === 'ROLE_EMPLOYEE') {
+                continue;
+            }
             $choices[$role] = $role;
         }
 
