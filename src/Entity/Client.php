@@ -163,6 +163,11 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->email;
     }
 
+    public function __toString(): string
+    {
+        return (string) ($this->email ?? $this->uuid ?? $this->id ?? '');
+    }
+
     /**
      * @see UserInterface
      */

@@ -163,6 +163,18 @@ class LocalSale
         return $this;
     }
 
+    public function getLocalSaleItemsSummary(): string
+    {
+        $labels = [];
+        foreach ($this->localSaleItems as $item) {
+            $product = $item->getProduct();
+            $productLabel = $product ? $product->getLabel() : 'Produit';
+            $labels[] = sprintf('%s x %s @ %s', $productLabel, $item->getQuantity(), $item->getUnitPriceAtSale());
+        }
+
+        return implode(', ', $labels);
+    }
+
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
