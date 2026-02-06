@@ -54,10 +54,6 @@ services:
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###
 
-volumes:
-  caddy_data:
-  caddy_config:
-  database_data:
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###
 
@@ -94,3 +90,7 @@ volumes:
 ###> doctrine/doctrine-bundle ###
   # database_data:
 ###< doctrine/doctrine-bundle ###
+volumes:
+  caddy_data:
+  caddy_config:
+  database_data:
