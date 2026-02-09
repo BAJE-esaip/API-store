@@ -76,6 +76,9 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
      * @var list<string> The user roles
      */
     #[ORM\Column]
+    #[Groups([
+        'client:get',
+    ])]
     private array $roles = [];
 
     /**

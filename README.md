@@ -18,7 +18,7 @@ Dans un terminal :
 1. Lancez le serveur : `docker compose up -d`
 1. Génerez des clés pour signer les JWT : `docker compose exec -u $(id -u):$(id -g) php bin/console lexik:jwt:generate-keypair`
 1. Exécutez les migrations pour ajouter les tables dans la base de données : `docker compose exec php bin/console doctrine:schema:update --force`
-1. Ajoutez des données de test : `docker compose exec php bin/console app:seed-test-data`
+1. Ajoutez des données de test : `docker compose exec php bin/console app:seed`
 
 ## Commandes utiles
 
@@ -71,4 +71,6 @@ Clients :
 - hugo.marchand@mail.local - azerty1234
 
 Employees :
-- alice_dubois - 1234azerty
+- alice_dubois - 1234azerty (no roles)
+- camille_rousseau - 123456789 (ROLE_CHECKOUT)
+- nicolas_betrand - 9999abcd (ROLE_CONTROL)

@@ -23,10 +23,17 @@ class Category
     #[ORM\Column(length: 255, unique: true)]
     #[Groups([
         'product:get',
+        'mobile_sale:get',
+        'local_sale:get',
     ])]
     private ?string $label = null;
 
     #[ORM\Column]
+    #[Groups([
+        'product:get',
+        'mobile_sale:get',
+        'local_sale:get',
+    ])]
     private ?bool $weighable = null;
 
     /**

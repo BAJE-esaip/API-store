@@ -54,18 +54,24 @@ class Product
     #[ORM\Column(length: 255)]
     #[Groups([
         'product:get',
+        'mobile_sale:get',
+        'local_sale:get',
     ])]
     private ?string $label = null;
 
     #[ORM\Column]
     #[Groups([
         'product:get',
+        'mobile_sale:get',
+        'local_sale:get',
     ])]
     private ?float $unitPrice = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups([
         'product:get',
+        'mobile_sale:get',
+        'local_sale:get',
     ])]
     private ?float $unitWeight = null;
 
@@ -76,6 +82,8 @@ class Product
     #[ORM\JoinColumn(nullable: false)]
     #[Groups([
         'product:get',
+        'mobile_sale:get',
+        'local_sale:get',
     ])]
     private ?Category $category = null;
 
