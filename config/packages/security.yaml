@@ -93,7 +93,13 @@ security:
         # clients API login
         - { path: ^/api/login$, methods: [POST], roles: PUBLIC_ACCESS }
         - { path: ^/api/clients, roles: ROLE_CLIENT }
+        # products and categories
         - { path: ^/api/products, roles: PUBLIC_ACCESS }
+        - { path: ^/api/categories, roles: PUBLIC_ACCESS }
+        # mobile sales
+        - { path: ^/api/mobile_sales, roles: [ROLE_CLIENT, ROLE_CONTROL] }
+        # local sales
+        - { path: ^/api/local_sales, roles: [ROLE_CHECKOUT, ROLE_CONTROL] }
         # close all API route that are undefined
         - { path: '^/api', roles: ROLE_IMPOSSIBLE }
 

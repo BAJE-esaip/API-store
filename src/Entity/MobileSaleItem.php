@@ -2,12 +2,17 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\MobileSaleItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: MobileSaleItemRepository::class)]
 #[UniqueConstraint(name: 'UNIQUE_PRODUCT_MOBILE_SALE', fields: ['product', 'mobileSale'])]
+#[ApiResource(
+    operations: [],
+)]
 class MobileSaleItem
 {
     #[ORM\Id]
@@ -18,6 +23,9 @@ class MobileSaleItem
     // #[ORM\Id]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups([
+        'mobile_sale:get',
+    ])]
     private ?Product $product = null;
 
     // #[ORM\Id]
@@ -26,9 +34,15 @@ class MobileSaleItem
     private ?MobileSale $mobileSale = null;
 
     #[ORM\Column]
+    #[Groups([
+        'mobile_sale:get',
+    ])]
     private ?float $quantity = null;
 
     #[ORM\Column]
+    #[Groups([
+        'mobile_sale:get',
+    ])]
     private ?float $unitPriceAtSale = null;
 
     public function getId(): ?int

@@ -2,15 +2,41 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use App\Repository\MobileSaleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation\Timestampable;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 // use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: MobileSaleRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['mobile_sale:get']],
+    // denormalizationContext: ['groups' => ['mobile_sale:set']],
+    operations: [
+        // CLIENT APP
+        // get current cart
+        // new Get(),
+        // get list of past sales
+        // new GetCollection(),
+        // create cart
+        // new Post(),
+        // pay current cart
+        // new Post(),
+        // CONTROL APP
+        // get mobile sale with UUID
+        new Get(
+            security: 'is_granted("ROLE_CONTROL")',
+        ),
+    ],
+)]
 class MobileSale
 {
     // use TimestampableEntity;
@@ -18,15 +44,23 @@ class MobileSale
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[ApiProperty(identifier: false)]
     private ?int $id = null;
 
     #[ORM\Column(type: 'uuid', unique: true)]
+    #[ApiProperty(identifier: true)]
     private ?Uuid $uuid = null;
 
     #[ORM\Column]
+    #[Groups([
+        'mobile_sale:get',
+    ])]
     private ?float $total = null;
 
     #[ORM\Column]
+    #[Groups([
+        'mobile_sale:get',
+    ])]
     private ?bool $paid = null;
 
     /**
@@ -38,6 +72,9 @@ class MobileSale
         orphanRemoval: true,
         cascade: ['persist', 'remove'],
     )]
+    #[Groups([
+        'mobile_sale:get',
+    ])]
     private Collection $mobileSaleItems;
 
     #[ORM\ManyToOne(inversedBy: 'mobileSales')]
@@ -46,10 +83,16 @@ class MobileSale
 
     #[ORM\Column]
     #[Timestampable(on: 'create')]
+    #[Groups([
+        'mobile_sale:get',
+    ])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
     #[Timestampable(on: 'update')]
+    #[Groups([
+        'mobile_sale:get',
+    ])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct()
