@@ -20,6 +20,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Component\HttpFoundation\Response;
 
 use App\Entity\Employee;
+use App\Entity\Client;
 use App\Entity\Product;
 use App\Entity\Correction;
 
@@ -58,6 +59,7 @@ class DashboardController extends AbstractDashboardController
                 'categories' => $this->categoryRepository->count([]),
                 'products' => $this->productRepository->count([]),
                 'stockValue' => $this->calculateStockValue(),
+                'purchasesCount' => $this->purchaseRepository->count([]),
                 'purchasesTotal' => $this->sumField($this->purchaseRepository, 'p', 'total'),
             ];
         }
@@ -117,17 +119,17 @@ class DashboardController extends AbstractDashboardController
             ->setPermission('ROLE_ADMIN')
             ->setSubItems([
                 MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', Employee::class)->setPermission('ROLE_ADMIN'),
+                MenuItem::linkToCrud('Clients', 'fas fa-users', Client::class)->setPermission('ROLE_ADMIN'),
                 MenuItem::linkToCrud('TVA', 'fas fa-ellipsis-v', VatRate::class)->setPermission('ROLE_ADMIN'),
             ]);
 
         yield MenuItem::subMenu('Comptabilité', 'fas fa-book')
-            ->setPermission('ROLE_CHECKOUT')
+            ->setPermission('ROLE_ADMIN')
             ->setSubItems([
-                MenuItem::linkToCrud('Hitorique achats', 'fas fa-credit-card', Purchase::class)->setPermission('ROLE_CHECKOUT'),
-                MenuItem::linkToCrud('Vente Local', 'fas fa-credit-card', LocalSale::class)->setPermission('ROLE_CHECKOUT'),
-                MenuItem::linkToCrud('Vente Mobile', 'fas fa-credit-card', MobileSale::class)->setPermission('ROLE_CHECKOUT'),
-
-        ]);
+                MenuItem::linkToCrud('Historique achats', 'fas fa-credit-card', Purchase::class)->setPermission('ROLE_ADMIN'),
+                MenuItem::linkToCrud('Vente Local', 'fas fa-credit-card', LocalSale::class)->setPermission('ROLE_ADMIN'),
+                MenuItem::linkToCrud('Vente Mobile', 'fas fa-credit-card', MobileSale::class)->setPermission('ROLE_ADMIN'),
+            ]);
 
         yield MenuItem::subMenu('Inventaire', 'fas fa-list')->setSubItems([
             MenuItem::linkToCrud('Produits', 'fas fa-inbox', Product::class),

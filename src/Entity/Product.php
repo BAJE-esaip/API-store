@@ -76,6 +76,9 @@ class Product
     private ?float $unitWeight = null;
 
     #[ORM\Column]
+    #[Groups([
+        'product:get',
+    ])]
     private ?float $inventory = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]

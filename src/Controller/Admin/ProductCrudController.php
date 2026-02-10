@@ -25,7 +25,7 @@ class ProductCrudController extends AbstractCrudController
             TextField::new('label', 'Nom'),
             NumberField::new('unitPrice', 'Prix unitaire')->setNumDecimals(2),
             NumberField::new('unitWeight', 'Poids unitaire')->setNumDecimals(3)->setRequired(false),
-            TextField::new('barcode', 'Code-barres')->setRequired(false),
+            TextField::new('code', 'Code')->setRequired(false),
             NumberField::new('inventory', 'Stock'),
             AssociationField::new('category', 'Catégorie'),
             AssociationField::new('vat', 'TVA'),

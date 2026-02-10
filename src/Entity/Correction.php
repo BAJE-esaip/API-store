@@ -127,4 +127,16 @@ class Correction
 
         return $this;
     }
+
+    public function getCorrectionItemsSummary(): string
+    {
+        $labels = [];
+        foreach ($this->getCorrectionItems() as $item) {
+            $product = $item->getProduct();
+            $productLabel = $product ? $product->getLabel() : 'Produit';
+            $labels[] = sprintf('%s -> %s', $productLabel, $item->getNewInventory());
+        }
+
+        return implode(', ', $labels);
+    }
 }

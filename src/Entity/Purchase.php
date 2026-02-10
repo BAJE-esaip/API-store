@@ -104,6 +104,18 @@ class Purchase
         return $this;
     }
 
+    public function getPurchaseItemsSummary(): string
+    {
+        $labels = [];
+        foreach ($this->purchaseItems as $item) {
+            $product = $item->getProduct();
+            $productLabel = $product ? $product->getLabel() : 'Produit';
+            $labels[] = sprintf('%s x %s @ %s', $productLabel, $item->getQuantity(), $item->getUnitPriceAtPurchase());
+        }
+
+        return implode(', ', $labels);
+    }
+
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;

@@ -25,6 +25,13 @@ class UserChecker implements UserCheckerInterface {
         if ($user->getDeletedAt() !== null) {
             throw new CustomUserMessageAuthenticationException('Your account has been deleted and can no longer be accessed.');
         }
+
+        if ($user instanceof Employee) {
+            $roles = $user->getRoles();
+            if (!in_array('ROLE_CONTROL', $roles, true)) {
+                throw new CustomUserMessageAuthenticationException('Accès non autorisé.');
+            }
+        }
     }
 
     public function checkPostAuth(UserInterface $user): void {}

@@ -92,6 +92,9 @@ security:
         - { path: ^/api/clients$, methods: [POST], roles: PUBLIC_ACCESS }
         # clients API login
         - { path: ^/api/login$, methods: [POST], roles: PUBLIC_ACCESS }
+        # tickets lookup
+        - { path: ^/api/tickets/local-sale, methods: [GET], roles: PUBLIC_ACCESS }
+        - { path: ^/api/tickets/mobile-sale, methods: [GET], roles: PUBLIC_ACCESS }
         - { path: ^/api/clients, roles: ROLE_CLIENT }
         # products and categories
         - { path: ^/api/products, roles: PUBLIC_ACCESS }
